@@ -8,7 +8,7 @@ function calc(){
         let c = Number.parseInt(document.querySelector("#c").value);
         let b2 = (b * b) - (4 * a * c);
         let decider = Math.sqrt(b2).toString();
-        let left = (-b) / (2 * a);
+        let left = (-b)/(2 * a);
         let right = "";
         let x1 = "";
         let x2 = "";
