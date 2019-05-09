@@ -23,8 +23,15 @@ function calc(){
             x1 = left+right;
             x2 = left-right;
         }
+
+        if(x1.toString()==="NaN" || x2.toString()==="NaN"){
+            window.alert("Malformed Input!");
+            location.reload();
+        }
+        else{
         document.querySelector("#x1").value = x1;
         document.querySelector("#x2").value = x2;
+        }
 
 }
 
