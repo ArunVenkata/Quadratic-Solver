@@ -1,37 +1,52 @@
 import React, {Component} from 'react';
 import './App.css';
-import {Button, Checkbox, Form, Container, Grid, Input, Header} from 'semantic-ui-react'
+import {Button, Container, Grid, Input, Header} from 'semantic-ui-react'
 
-function calc(){
-      let a = Number.parseInt(document.querySelector("#a").value);
-        let b = Number.parseInt(document.querySelector("#b").value);
-        let c = Number.parseInt(document.querySelector("#c").value);
-        let b2 = (b * b) - (4 * a * c);
-        let decider = Math.sqrt(b2).toString();
-        let left = (-b)/(2 * a);
-        let right = "";
-        let x1 = "";
-        let x2 = "";
-        if (decider === "NaN") {
-            right = (Math.sqrt(b2*-1)/(2 * a)).toString() + "i";
-            x1 = left.toString()+"+"+right.toString();
-            x2 = left.toString()+"-"+right.toString();
-        }
-        else{
 
-            right = decider/(2*a);
-            x1 = left+right;
-            x2 = left-right;
-        }
+function decider(a: number, b: number, c: number) {
+    let num: number = (b * b) - (4 * a * c);
+    let cond: boolean = Math.sqrt(num).toString() === "NaN";
+    if (cond)
+        return [cond, Math.sqrt(num * -1) / (2 * a)];
+    else
+        return [cond, Math.sqrt(num) / (2 * a)];
 
-        if(x1.toString()==="NaN" || x2.toString()==="NaN"){
-            window.alert("Malformed Input!");
-            location.reload();
+}
+
+function calc() {
+
+    // @ts-ignore
+    let a: number = Number.parseFloat(document.querySelector("#a").value);
+    // @ts-ignore
+    let b: number = Number.parseFloat(document.querySelector("#b").value);
+    // @ts-ignore
+    let c: number = Number.parseFloat(document.querySelector("#c").value);
+    // @ts-ignore
+    let x1: any = document.querySelector("#x1");
+    // @ts-ignore
+    let x2: any = document.querySelector("#x2");
+
+    //default errors
+    if ((a.toString() || b.toString() || c.toString()) === "NaN") {
+        window.alert("Enter All Values!");
+    } else {
+
+        let imag: (any | any)[] = decider(a, b, c);
+        console.log(imag);
+        let res1: string = "";
+        let res2: string = "";
+
+        if (imag[0]) {
+            res1 = (-b / (2 * a)).toString() + "+" + imag[1].toString() + "i";
+            res2 = (-b / (2 * a)).toString() + "-" + imag[1].toString() + "i";
+        } else {
+            res1 = ((-b / (2 * a)) + imag[1]).toString();
+            res2 = ((-b / (2 * a)) - imag[1]).toString();
         }
-        else{
-        document.querySelector("#x1").value = x1;
-        document.querySelector("#x2").value = x2;
-        }
+        x1.value = res1;
+        x2.value = res2;
+
+    }
 
 }
 
