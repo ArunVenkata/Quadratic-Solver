@@ -2,53 +2,100 @@ import React, {Component} from 'react';
 import './App.css';
 import {Button, Container, Grid, Input, Header} from 'semantic-ui-react'
 
+/*
+* formula for quadratic:
+* x(1||2) = (-b(+||-)sqrt(b^2-4*a*c))/(2*a)
+*
+* split as follows
+* x1 = (-b/(2*a)) + (sqrt(b^2-4*a*c)/(2*a))
+* x1 = (-b/(2*a)) - (sqrt(b^2-4*a*c)/(2*a))
+*
+* imag root checks:
+* b^2-4*a*c < 0 -> True
+* b^2-4*a*c >= 0 -> False
+*
+* */
 
-function decider(a: number, b: number, c: number) {
-    let num: number = (b * b) - (4 * a * c);
-    let cond: boolean = Math.sqrt(num).toString() === "NaN";
-    if (cond)
-        return [cond, Math.sqrt(num * -1) / (2 * a)];
-    else
-        return [cond, Math.sqrt(num) / (2 * a)];
+class Roots {
+    private readonly a: number;
+    private readonly b: number;
+    private readonly c: number;
+    private x1: any;
+    private x2: any;
 
-}
-
-function calc() {
-
-    // @ts-ignore
-    let a: number = Number.parseFloat(document.querySelector("#a").value);
-    // @ts-ignore
-    let b: number = Number.parseFloat(document.querySelector("#b").value);
-    // @ts-ignore
-    let c: number = Number.parseFloat(document.querySelector("#c").value);
-    // @ts-ignore
-    let x1: any = document.querySelector("#x1");
-    // @ts-ignore
-    let x2: any = document.querySelector("#x2");
-
-    //default errors
-    if ((a.toString() || b.toString() || c.toString()) === "NaN") {
-        window.alert("Enter All Values!");
-    } else {
-
-        let imag: (any | any)[] = decider(a, b, c);
-        console.log(imag);
-        let res1: string = "";
-        let res2: string = "";
-
-        if (imag[0]) {
-            res1 = (-b / (2 * a)).toString() + "+" + imag[1].toString() + "i";
-            res2 = (-b / (2 * a)).toString() + "-" + imag[1].toString() + "i";
-        } else {
-            res1 = ((-b / (2 * a)) + imag[1]).toString();
-            res2 = ((-b / (2 * a)) - imag[1]).toString();
-        }
-        x1.value = res1;
-        x2.value = res2;
+    constructor(a: string, b: string, c: string, set1: any, set2: any) {
+        this.a = Number.parseFloat(a);
+        this.b = Number.parseFloat(b);
+        this.c = Number.parseFloat(c);
+        // @ts-ignore
+        this.x1 = set1;
+        // @ts-ignore
+        this.x2 = set2;
 
     }
 
+    isImaginary() {
+        return this.getDiscriminant() < 0
+    }
+
+    process() {
+
+        let left = (-this.b / (2 * this.a));
+        let right: number;
+        let isimag: boolean = this.isImaginary();
+        if (isimag) {
+            right = Math.sqrt(this.getDiscriminant() * -1) / (2 * this.a);
+        } else {
+            right = Math.sqrt(this.getDiscriminant()) / (2 * this.a);
+        }
+
+        this.calculateValues(left, right, isimag)
+    }
+
+    calculateValues(left: number, right: number, isimag: boolean) {
+        let res1: string;
+        let res2: string;
+        res1 = isimag ? left.toString() + "+" + right + "i" : (left + right).toString();
+        res2 = isimag ? left.toString() + "+" + right + "i" : (left - right).toString();
+        this.setValues(res1, res2)
+    }
+
+    getDiscriminant(): number {
+        return Math.pow(this.b, 2) - (4 * this.a * this.c)
+    };
+
+    setValues(res1: string, res2: string): void {
+        if ((res1 || res2) === "NaN+NaN" || (res1 || res2) === "NaN+NaNi") {
+            window.alert("Enter Proper Values!!");
+            window.location.reload();
+        } else {
+            this.x1.value = res1;
+            this.x2.value = res2;
+        }
+    };
 }
+
+// @ts-ignore
+function calc() {
+
+    let obj = {
+
+        a: document.querySelector("#a"),
+        b: document.querySelector("#b"),
+        c: document.querySelector("#c"),
+        set1: document.querySelector("#x1"),
+        set2: document.querySelector("#x2"),
+    };
+    if (obj.a && obj.b && obj.c && obj.set1 && obj.set2) {
+        // @ts-ignore
+        let run = new Roots(obj.a.value, obj.b.value, obj.c.value, obj.set1, obj.set2);
+        run.process()
+    } else {
+        window.alert("Enter Values Properly!!")
+    }
+
+}
+
 
 class App extends Component {
 
