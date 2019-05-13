@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
+import React, {Component} from "react"
 import './App.css';
-import {Button, Container, Grid, Input, Header} from 'semantic-ui-react'
+import {Button, Container, Grid, Input, Header} from "semantic-ui-react"
 
 /*
 * formula for quadratic:
@@ -24,9 +24,9 @@ class Roots {
     private x2: any;
 
     constructor(a: string, b: string, c: string, set1: any, set2: any) {
-        this.a = Number.parseFloat(a);
-        this.b = Number.parseFloat(b);
-        this.c = Number.parseFloat(c);
+        this.a = Number(a);
+        this.b = Number(b);
+        this.c = Number(c);
         // @ts-ignore
         this.x1 = set1;
         // @ts-ignore
@@ -55,8 +55,8 @@ class Roots {
     calculateValues(left: number, right: number, isimag: boolean) {
         let res1: string;
         let res2: string;
-        res1 = isimag ? left.toString() + "+" + right + "i" : (left + right).toString();
-        res2 = isimag ? left.toString() + "+" + right + "i" : (left - right).toString();
+        res1 = isimag ? left.toFixed(2).toString() + "+" + right.toFixed(2).toString() + "i" : (left + right).toFixed(2).toString();
+        res2 = isimag ? left.toFixed(2).toString() + "+" + right.toFixed(2).toString() + "i" : (left - right).toFixed(2).toString();
         this.setValues(res1, res2)
     }
 
